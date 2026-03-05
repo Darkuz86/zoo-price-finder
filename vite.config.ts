@@ -4,6 +4,13 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+ base: (() => {
+   const raw = process.env.BASE_URL?.trim();
+   if (!raw) return "/";
+ 
+   const withLeadingSlash = raw.startsWith("/") ? raw : `/${raw}`;
+   return withLeadingSlash.endsWith("/") ? withLeadingSlash : `${withLeadingSlash}/`;
+ })(),
   server: {
     host: "::",
     port: 8080,
