@@ -237,6 +237,30 @@ function getPageNumbers(current, total) {
 }
 
 // ─── Render ─────────────────────────────────────────────
+function updateCategoryFilter() {
+  const dept = elDept.value;
+  const prevCat = elCat.value;
+  const cats = [...new Set(
+    allItems
+      .filter(i => !dept || i.dept === dept)
+      .map(i => i.cat)
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, 'ru'));
+
+  elCat.innerHTML = '<option value="">Все категории</option>';
+  for (const c of cats) {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    elCat.appendChild(o);
+  }
+  // Restore previous selection if still valid
+  if (cats.includes(prevCat)) {
+    elCat.value = prevCat;
+  } else {
+    elCat.value = '';
+  }
+}
+
 function applyFilters() {
   const q    = elSearch.value.trim().toLowerCase();
   const dept = elDept.value;
@@ -350,5 +374,8 @@ elClear.addEventListener('click', function() {
   elClear.hidden = true;
   applyFilters();
 });
-elDept.addEventListener('change', applyFilters);
+elDept.addEventListener('change', function() {
+  updateCategoryFilter();
+  applyFilters();
+});
 elCat.addEventListener('change', applyFilters);
