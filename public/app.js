@@ -18,6 +18,7 @@ const elDept      = $('#filterDepartment');
 const elCat       = $('#filterCategory');
 const elCount     = $('#resultsCount');
 const elPagination = $('#pagination');
+const elClear     = $('#searchClear');
 
 let allItems = [];
 let currentPage = 1;
@@ -340,6 +341,14 @@ function renderPage() {
   }
 })();
 
-elSearch.addEventListener('input', debounce(applyFilters, 300));
+elSearch.addEventListener('input', debounce(function() {
+  elClear.hidden = !elSearch.value;
+  applyFilters();
+}, 300));
+elClear.addEventListener('click', function() {
+  elSearch.value = '';
+  elClear.hidden = true;
+  applyFilters();
+});
 elDept.addEventListener('change', applyFilters);
 elCat.addEventListener('change', applyFilters);
