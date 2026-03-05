@@ -38,7 +38,7 @@ body {
   background: linear-gradient(135deg, #42a5f5, #1976D2);
   color: #fff;
   padding: 0;
-  text-align: center;
+  text-align: left;
 }
 .header__top {
   display: flex;
@@ -121,20 +121,12 @@ body {
   cursor: pointer;
   padding: 8px;
 }
-.header__title-row {
-  background: linear-gradient(180deg, rgba(0,0,0,.05) 0%, transparent 100%);
-  padding: 28px 0 24px;
-}
-.header__title {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-.header__subtitle {
-  margin-top: 6px;
-  font-size: 1rem;
-  opacity: .85;
+.header__phone {
+  font-size: .9rem;
   font-weight: 400;
+}
+.header__address {
+  font-size: .8rem;
 }
 @media (max-width: 900px) {
   .header__nav, .header__right { display: none; }
