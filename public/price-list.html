@@ -10,9 +10,31 @@
 </head>
 <body>
   <header class="header">
-    <div class="container">
-      <h1 class="header__title">Прайс</h1>
-      <p class="header__subtitle">Актуальные цены на услуги клиники ZooStatus</p>
+    <div class="header__top">
+      <a href="https://zoostatus.ru/" class="header__logo">
+        <span class="logo-text">З<span class="logo-small">ОО</span><br>СТА<br>ТУ<span class="logo-accent">С</span></span>
+      </a>
+      <nav class="header__nav">
+        <a href="https://zoostatus.ru/lechenie" class="header__link">Услуги</a>
+        <a href="https://zoostatus.ru/uslugi" class="header__link header__link--active">Цены</a>
+        <a href="https://zoostatus.ru/lichnyi-kabinet" class="header__link">Личный кабинет</a>
+        <a href="https://zoostatus.ru/online-priem" class="header__link">Онлайн-прием</a>
+        <a href="https://zoostatus.ru/kontakty" class="header__link">Контакты</a>
+      </nav>
+      <div class="header__right">
+        <a href="https://zoostatus.ru/online-priem" class="header__cta">ЗАПИСАТЬСЯ 24/7</a>
+        <div class="header__contacts">
+          <span>Варшавское ш., 125, стр.1</span>
+          <a href="tel:+74993722737">+7 (499) 372 27 37</a>
+        </div>
+      </div>
+      <button class="header__burger" id="burgerBtn" aria-label="Меню">☰</button>
+    </div>
+    <div class="header__title-row">
+      <div class="container">
+        <h1 class="header__title">Прайс</h1>
+        <p class="header__subtitle">Актуальные цены на услуги клиники ZooStatus</p>
+      </div>
     </div>
   </header>
 
@@ -85,6 +107,11 @@
     </div>
   </footer>
 
+  <script>
+    document.getElementById('burgerBtn').addEventListener('click', function() {
+      this.closest('.header__top').classList.toggle('open');
+    });
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
