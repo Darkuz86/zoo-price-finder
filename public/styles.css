@@ -1,18 +1,19 @@
 /* ===== ZooStatus Price List Styles ===== */
 :root {
-  --color-bg: #0f1b2d;
-  --color-surface: #162033;
-  --color-primary: #38b6ff;
-  --color-primary-dark: #2da1e3;
-  --color-text: #e8edf3;
-  --color-text-secondary: #8a9bb5;
-  --color-border: #243348;
-  --color-accent-bg: #1a2d47;
-  --color-error: #ff6b6b;
-  --color-muted: #5a6f8a;
+  --color-bg: #f0f4f8;
+  --color-surface: #ffffff;
+  --color-primary: #2196F3;
+  --color-primary-dark: #1976D2;
+  --color-primary-light: #64B5F6;
+  --color-text: #2d3436;
+  --color-text-secondary: #636e72;
+  --color-border: #dde3e8;
+  --color-accent-bg: #e3f2fd;
+  --color-error: #d63031;
+  --color-muted: #90a4ae;
   --radius: 10px;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.2);
-  --shadow-md: 0 4px 12px rgba(0,0,0,.3);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
   --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
@@ -34,7 +35,7 @@ body {
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, #1a2d47, #0f1b2d);
+  background: linear-gradient(135deg, #42a5f5, #1976D2);
   color: #fff;
   padding: 40px 0 32px;
   text-align: center;
@@ -79,13 +80,17 @@ body {
   border-radius: var(--radius);
   font-size: 1rem;
   background: var(--color-surface);
+  color: var(--color-text);
   box-shadow: var(--shadow-sm);
   transition: border-color .2s, box-shadow .2s;
   outline: none;
 }
+.search-input::placeholder {
+  color: var(--color-muted);
+}
 .search-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(42,157,143,.15);
+  box-shadow: 0 0 0 3px rgba(33,150,243,.15);
 }
 
 .filters {
@@ -100,6 +105,7 @@ body {
   border-radius: var(--radius);
   font-size: .9rem;
   background: var(--color-surface);
+  color: var(--color-text);
   cursor: pointer;
   outline: none;
   appearance: none;
@@ -140,7 +146,7 @@ body {
 
 /* Service list */
 .service-list {
-  padding-bottom: 40px;
+  padding-bottom: 20px;
 }
 .section-heading {
   margin: 28px 0 12px;
@@ -176,6 +182,7 @@ body {
 .service-card__name {
   font-size: .95rem;
   font-weight: 500;
+  color: var(--color-text);
   word-break: break-word;
 }
 .service-card__meta {
@@ -196,14 +203,105 @@ body {
   font-size: .85rem;
 }
 
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding: 20px 0 30px;
+  flex-wrap: wrap;
+}
+.pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: .9rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+}
+.pagination__btn:hover {
+  background: var(--color-accent-bg);
+  border-color: var(--color-primary-light);
+}
+.pagination__btn--active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+.pagination__btn--active:hover {
+  background: var(--color-primary-dark);
+}
+.pagination__btn:disabled {
+  opacity: .4;
+  cursor: default;
+  pointer-events: none;
+}
+.pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  color: var(--color-muted);
+  font-size: .9rem;
+}
+
 /* Footer */
 .footer {
-  text-align: center;
-  padding: 24px 0;
-  font-size: .8rem;
-  color: var(--color-muted);
-  border-top: 1px solid var(--color-border);
+  background: #1a2d47;
+  color: #c8d6e5;
+  padding: 0;
   margin-top: 20px;
+}
+.footer__top {
+  display: flex;
+  gap: 40px;
+  padding: 40px 20px 30px;
+  max-width: 900px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+.footer__col {
+  flex: 1;
+  min-width: 200px;
+}
+.footer__col h3 {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.footer__col p,
+.footer__col a {
+  font-size: .9rem;
+  color: #a0b4cc;
+  line-height: 1.7;
+  text-decoration: none;
+}
+.footer__col a:hover {
+  color: #64B5F6;
+}
+.footer__map {
+  width: 100%;
+  border: none;
+  border-radius: 0;
+}
+.footer__bottom {
+  text-align: center;
+  padding: 16px 20px;
+  font-size: .8rem;
+  color: #6a7f96;
+  border-top: 1px solid #243348;
 }
 
 /* Responsive */
@@ -214,4 +312,6 @@ body {
   .service-card { padding: 12px; gap: 10px; }
   .service-card__name { font-size: .88rem; }
   .service-card__price { font-size: .95rem; }
+  .footer__top { flex-direction: column; gap: 24px; }
+  .pagination__btn { min-width: 32px; height: 32px; font-size: .8rem; }
 }
