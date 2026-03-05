@@ -4,6 +4,7 @@
 const CSV_PRICES_URL = './price.csv';
 const CSV_ORDER_URL  = './newpricepopular.csv';
 const ENABLE_CACHE_BUST = true;
+const PAGE_SIZE = 100;
 // ─────────────────────────────────────────────────────────
 
 const $ = (s) => document.querySelector(s);
@@ -16,8 +17,11 @@ const elSearch    = $('#searchInput');
 const elDept      = $('#filterDepartment');
 const elCat       = $('#filterCategory');
 const elCount     = $('#resultsCount');
+const elPagination = $('#pagination');
 
-let allItems = []; // merged list
+let allItems = [];
+let currentPage = 1;
+let filteredItems = [];
 
 // ─── Helpers ────────────────────────────────────────────
 function cacheBust(url) {
@@ -44,7 +48,6 @@ function debounce(fn, ms) {
 }
 
 function col(row, name) {
-  // CSV headers may have BOM or spaces — try exact then trimmed
   if (row[name] !== undefined) return row[name];
   for (const k of Object.keys(row)) {
     if (k.trim() === name) return row[k];
@@ -67,7 +70,6 @@ function loadCSV(url) {
 
 // ─── Merge logic ────────────────────────────────────────
 function mergeData(priceRows, orderRows) {
-  // Build lookup maps from price.csv
   const byKey = new Map();
   const byName = new Map();
   const nameCounts = new Map();
@@ -81,11 +83,9 @@ function mergeData(priceRows, orderRows) {
     const key = makeKey(name, dept, cat);
     byKey.set(key, cost);
     nameCounts.set(name.toLowerCase(), (nameCounts.get(name.toLowerCase()) || 0) + 1);
-    // Store last seen for unique fallback
     byName.set(name.toLowerCase(), cost);
   }
 
-  // Remove non-unique names from byName
   for (const [n, c] of nameCounts) {
     if (c > 1) byName.delete(n);
   }
@@ -93,7 +93,6 @@ function mergeData(priceRows, orderRows) {
   const usedPriceKeys = new Set();
   const items = [];
 
-  // Process order file
   for (const r of orderRows) {
     const rank = parseInt(col(r, 'Ранг популярности'), 10);
     const name = (col(r, 'Название') || '').trim();
@@ -105,12 +104,10 @@ function mergeData(priceRows, orderRows) {
     let price = null;
     let matched = false;
 
-    // 1) exact key match
     if (byKey.has(key)) {
       price = byKey.get(key);
       matched = true;
     }
-    // 2) unique name fallback
     if (!matched && byName.has(name.toLowerCase())) {
       price = byName.get(name.toLowerCase());
       matched = true;
@@ -127,10 +124,8 @@ function mergeData(priceRows, orderRows) {
     });
   }
 
-  // Sort by rank
   items.sort((a, b) => a.rank - b.rank);
 
-  // Remaining from price.csv not in order file
   const extras = [];
   for (const r of priceRows) {
     const name = (col(r, 'Название') || '').trim();
@@ -140,7 +135,7 @@ function mergeData(priceRows, orderRows) {
     if (!name) continue;
     const key = makeKey(name, dept, cat);
     if (!usedPriceKeys.has(key)) {
-      usedPriceKeys.add(key); // avoid dupes
+      usedPriceKeys.add(key);
       extras.push({
         name, dept, cat,
         rank: 999999,
@@ -172,32 +167,111 @@ function populateFilters(items) {
   }
 }
 
+// ─── Pagination ─────────────────────────────────────────
+function renderPagination(totalItems) {
+  elPagination.innerHTML = '';
+  const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+  if (totalPages <= 1) return;
+
+  const frag = document.createDocumentFragment();
+
+  // Prev button
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'pagination__btn';
+  prevBtn.textContent = '‹';
+  prevBtn.disabled = currentPage === 1;
+  prevBtn.addEventListener('click', () => { currentPage--; renderPage(); });
+  frag.appendChild(prevBtn);
+
+  // Page numbers with ellipsis
+  const pages = getPageNumbers(currentPage, totalPages);
+  for (const p of pages) {
+    if (p === '...') {
+      const el = document.createElement('span');
+      el.className = 'pagination__ellipsis';
+      el.textContent = '…';
+      frag.appendChild(el);
+    } else {
+      const btn = document.createElement('button');
+      btn.className = 'pagination__btn' + (p === currentPage ? ' pagination__btn--active' : '');
+      btn.textContent = p;
+      btn.addEventListener('click', () => { currentPage = p; renderPage(); });
+      frag.appendChild(btn);
+    }
+  }
+
+  // Next button
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'pagination__btn';
+  nextBtn.textContent = '›';
+  nextBtn.disabled = currentPage === totalPages;
+  nextBtn.addEventListener('click', () => { currentPage++; renderPage(); });
+  frag.appendChild(nextBtn);
+
+  // Last page button
+  const lastBtn = document.createElement('button');
+  lastBtn.className = 'pagination__btn';
+  lastBtn.textContent = '»';
+  lastBtn.disabled = currentPage === totalPages;
+  lastBtn.addEventListener('click', () => { currentPage = totalPages; renderPage(); });
+  frag.appendChild(lastBtn);
+
+  elPagination.appendChild(frag);
+}
+
+function getPageNumbers(current, total) {
+  const pages = [];
+  if (total <= 9) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+    return pages;
+  }
+  pages.push(1);
+  if (current > 4) pages.push('...');
+  const start = Math.max(2, current - 2);
+  const end = Math.min(total - 1, current + 2);
+  for (let i = start; i <= end; i++) pages.push(i);
+  if (current < total - 3) pages.push('...');
+  pages.push(total);
+  return pages;
+}
+
 // ─── Render ─────────────────────────────────────────────
-function render() {
+function applyFilters() {
   const q    = elSearch.value.trim().toLowerCase();
   const dept = elDept.value;
   const cat  = elCat.value;
 
-  const filtered = allItems.filter(item => {
+  filteredItems = allItems.filter(item => {
     if (q && !item.name.toLowerCase().includes(q)) return false;
     if (dept && item.dept !== dept) return false;
     if (cat && item.cat !== cat) return false;
     return true;
   });
 
+  currentPage = 1;
+  renderPage();
+}
+
+function renderPage() {
   elList.innerHTML = '';
-  elEmpty.hidden = filtered.length > 0;
-  elCount.textContent = filtered.length
-    ? `Найдено: ${filtered.length}`
+  elEmpty.hidden = filteredItems.length > 0;
+  elCount.textContent = filteredItems.length
+    ? `Найдено: ${filteredItems.length}`
     : '';
 
-  if (!filtered.length) return;
+  if (!filteredItems.length) {
+    elPagination.innerHTML = '';
+    return;
+  }
+
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const end = Math.min(start + PAGE_SIZE, filteredItems.length);
+  const pageItems = filteredItems.slice(start, end);
 
   const frag = document.createDocumentFragment();
   let inOtherSection = false;
 
-  for (const item of filtered) {
-    // Section heading for extras
+  for (const item of pageItems) {
     if (item.section === 'other' && !inOtherSection) {
       inOtherSection = true;
       const h = document.createElement('div');
@@ -239,6 +313,10 @@ function render() {
   }
 
   elList.appendChild(frag);
+  renderPagination(filteredItems.length);
+
+  // Scroll to top of list on page change
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ─── Init ───────────────────────────────────────────────
@@ -253,7 +331,7 @@ function render() {
     populateFilters(allItems);
 
     elLoading.hidden = true;
-    render();
+    applyFilters();
   } catch (err) {
     console.error('CSV load error:', err);
     elLoading.hidden = true;
@@ -262,6 +340,6 @@ function render() {
   }
 })();
 
-elSearch.addEventListener('input', debounce(render, 300));
-elDept.addEventListener('change', render);
-elCat.addEventListener('change', render);
+elSearch.addEventListener('input', debounce(applyFilters, 300));
+elDept.addEventListener('change', applyFilters);
+elCat.addEventListener('change', applyFilters);
