@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Прайс-лист — ZooStatus</title>
+  <meta name="description" content="Актуальный прайс-лист ветеринарной клиники ZooStatus. Цены на приём, диагностику, анализы, хирургию и другие услуги." />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1 class="header__title">Прайс</h1>
+      <p class="header__subtitle">Актуальные цены на услуги клиники ZooStatus</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="controls">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Поиск по названию услуги…" autocomplete="off" />
+      </div>
+      <div class="filters">
+        <select id="filterDepartment" class="filter-select">
+          <option value="">Все подразделения</option>
+        </select>
+        <select id="filterCategory" class="filter-select">
+          <option value="">Все категории</option>
+        </select>
+      </div>
+      <div class="results-count" id="resultsCount"></div>
+    </div>
+
+    <div id="stateLoading" class="state state--loading">
+      <div class="spinner"></div>
+      <p>Загружаем прайс-лист…</p>
+    </div>
+
+    <div id="stateError" class="state state--error" hidden>
+      <p>😿 Не удалось загрузить данные. Попробуйте обновить страницу.</p>
+      <p class="state__detail" id="errorDetail"></p>
+    </div>
+
+    <div id="stateEmpty" class="state state--empty" hidden>
+      <p>По вашему запросу ничего не найдено</p>
+    </div>
+
+    <div id="serviceList" class="service-list"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; ZooStatus — ветеринарная клиника</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
