@@ -51,26 +51,16 @@ body {
 }
 .header__logo {
   text-decoration: none;
-  background: #38b6ff;
-  color: #fff;
-  padding: 12px 14px;
-  border-radius: 0;
-  line-height: 1;
   flex-shrink: 0;
   display: flex;
   align-items: flex-start;
-  margin-top: -1px;
-  align-self: flex-start;
+  align-self: stretch;
 }
-.logo-text {
-  font-size: .95rem;
-  font-weight: 700;
-  letter-spacing: .08em;
-  line-height: 1.15;
+.header__logo-img {
+  height: 100%;
+  width: auto;
   display: block;
 }
-.logo-small { font-size: .7rem; letter-spacing: .12em; }
-.logo-accent { color: #fff; }
 .header__nav {
   display: flex;
   gap: 4px;
