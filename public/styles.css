@@ -1,18 +1,18 @@
 /* ===== ZooStatus Price List Styles ===== */
 :root {
-  --color-bg: #f8f9fa;
-  --color-surface: #ffffff;
-  --color-primary: #2a9d8f;
-  --color-primary-dark: #238a7e;
-  --color-text: #2d3436;
-  --color-text-secondary: #636e72;
-  --color-border: #e0e5e9;
-  --color-accent-bg: #eef9f7;
-  --color-error: #d63031;
-  --color-muted: #b2bec3;
+  --color-bg: #0f1b2d;
+  --color-surface: #162033;
+  --color-primary: #38b6ff;
+  --color-primary-dark: #2da1e3;
+  --color-text: #e8edf3;
+  --color-text-secondary: #8a9bb5;
+  --color-border: #243348;
+  --color-accent-bg: #1a2d47;
+  --color-error: #ff6b6b;
+  --color-muted: #5a6f8a;
   --radius: 10px;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
-  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.3);
   --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
@@ -34,7 +34,7 @@ body {
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  background: linear-gradient(135deg, #1a2d47, #0f1b2d);
   color: #fff;
   padding: 40px 0 32px;
   text-align: center;
